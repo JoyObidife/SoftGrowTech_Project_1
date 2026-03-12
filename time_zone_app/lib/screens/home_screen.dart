@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/timezone_service.dart';
+import '../widgets/section_card.dart';
+import '../widgets/custom_dropdown.dart';
+import '../widgets/picker_tile.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -84,21 +87,21 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Time Zone Converter'),
+        title: Text('Time Zone Converter'),
         elevation: 0,
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildSectionCard(
+            SectionCard(
               title: 'Start Section',
               icon: Icons.flight_takeoff,
               color: Colors.blue.shade50,
               children: [
-                _buildDropdown(
+                CustomDropdown(
                   label: 'Continent/Region',
                   value: _startRegion,
                   items: _regionsData.keys.toList(),
@@ -109,8 +112,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     });
                   },
                 ),
-                const SizedBox(height: 16),
-                _buildDropdown(
+                 SizedBox(height: 16),
+                CustomDropdown(
                   label: 'Starting Time Zone',
                   value: _startZone,
                   items: _regionsData[_startRegion] ?? [],
@@ -120,20 +123,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     });
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
-                      child: _buildPickerTile(
+                      child: PickerTile(
                         label: 'Date',
                         value: DateFormat('yyyy-MM-dd').format(_startDate),
                         icon: Icons.calendar_today,
                         onTap: () => _selectDate(context),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: 16),
                     Expanded(
-                      child: _buildPickerTile(
+                      child: PickerTile(
                         label: 'Time',
                         value: _startTime.format(context),
                         icon: Icons.access_time,
@@ -144,25 +147,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+           SizedBox(height: 24),
             ElevatedButton(
               onPressed: _convertTime,
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding:  EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              child: const Text('Convert Time'),
+              child: Text('Convert Time'),
             ),
-            const SizedBox(height: 24),
-            _buildSectionCard(
+             SizedBox(height: 24),
+            SectionCard(
               title: 'Destination Section',
               icon: Icons.flight_land,
               color: Colors.green.shade50,
               children: [
-                _buildDropdown(
+                CustomDropdown(
                   label: 'Destination Continent/Region',
                   value: _destRegion,
                   items: _regionsData.keys.toList(),
@@ -173,8 +176,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     });
                   },
                 ),
-                const SizedBox(height: 16),
-                _buildDropdown(
+                 SizedBox(height: 16),
+                CustomDropdown(
                   label: 'Destination Time Zone',
                   value: _destZone,
                   items: _regionsData[_destRegion] ?? [],
@@ -185,9 +188,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
                 if (_convertedResult != null) ...[
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding:  EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.blue.shade100,
                       borderRadius: BorderRadius.circular(12),
@@ -195,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Column(
                       children: [
-                        const Text(
+                        Text(
                           'Converted Time',
                           style: TextStyle(
                             fontSize: 14,
@@ -203,11 +206,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.blueGrey,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Text(
                           _convertedResult!,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.blueAccent,
@@ -225,101 +228,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSectionCard({
-    required String title,
-    required IconData icon,
-    required Color color,
-    required List<Widget> children,
-  }) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: Colors.blueAccent),
-                const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const Divider(height: 32),
-            ...children,
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDropdown({
-    required String label,
-    required String? value,
-    required List<String> items,
-    required ValueChanged<String?> onChanged,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontSize: 14, color: Colors.grey),
-        ),
-        const SizedBox(height: 4),
-        DropdownButtonFormField<String>(
-          value: value,
-          isExpanded: true,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          ),
-          items: items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-          onChanged: onChanged,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPickerTile({
-    required String label,
-    required String value,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-          const SizedBox(height: 4),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade400),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                Icon(icon, size: 20, color: Colors.blueAccent),
-                const SizedBox(width: 8),
-                Text(value, style: const TextStyle(fontSize: 16)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
