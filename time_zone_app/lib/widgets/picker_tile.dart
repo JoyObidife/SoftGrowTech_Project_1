@@ -35,7 +35,7 @@ class PickerTile extends StatelessWidget {
             child: Row(
               children: [
                 Icon(icon, size: 20, color: Colors.blueAccent),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 Text(value, style: TextStyle(fontSize: 16)),
               ],
             ),
